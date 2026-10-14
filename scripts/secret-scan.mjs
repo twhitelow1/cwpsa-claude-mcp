@@ -31,6 +31,8 @@ for (const f of files) {
   }
   const text = readFileSync(f, "utf8");
   text.split("\n").forEach((line, n) => {
+    // Test fixtures with dummy values can opt out per line.
+    if (line.includes("secret-scan:allow")) return;
     for (const [re, label] of PATTERNS) {
       if (re.test(line)) {
         console.error(`✘ ${f}:${n + 1}: possible ${label}`);
