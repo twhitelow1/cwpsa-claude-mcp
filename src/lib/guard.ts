@@ -23,6 +23,16 @@ export function guard(req: Request): { response: Response } | { tokenId: string 
   if (!checkOrigin(origin)) return { response: json({ error: "forbidden_origin" }, 403) };
   const auth = verifyBearer(req.headers.get("authorization"));
   if (!auth.ok) {
+    console.warn(
+      JSON.stringify({
+        ts: new Date().toISOString(),
+        type: "auth_failed",
+        reason: auth.reason,
+        presentedLength: auth.presentedLength,
+        expectedLength: auth.expectedLength,
+        path: new URL(req.url).pathname,
+      }),
+    );
     return {
       response: json({ error: auth.status === 401 ? "unauthorized" : "server_misconfigured" }, auth.status, {
         ...(auth.status === 401 ? { "WWW-Authenticate": 'Bearer realm="cw-bridge"' } : {}),

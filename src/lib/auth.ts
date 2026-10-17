@@ -1,9 +1,11 @@
 import { createHash, timingSafeEqual } from "node:crypto";
 import { ConfigError, allowedOrigins, getBridgeToken, type Env } from "./config";
 
+export type AuthFailReason = "not_configured" | "missing_header" | "bad_scheme" | "mismatch";
+
 export type AuthResult =
   | { ok: true; tokenId: string }
-  | { ok: false; status: 401 | 403 | 500; error: string };
+  | { ok: false; status: 401 | 403 | 500; error: string; reason: AuthFailReason; presentedLength?: number; expectedLength?: number };
 
 const sha256 = (s: string) => createHash("sha256").update(s, "utf8").digest();
 
@@ -16,15 +18,19 @@ export function verifyBearer(header: string | null | undefined, env: Env = proce
   try {
     expected = getBridgeToken(env);
   } catch (e) {
-    if (e instanceof ConfigError) return { ok: false, status: 500, error: "Server auth is not configured" };
+    if (e instanceof ConfigError) return { ok: false, status: 500, error: "Server auth is not configured", reason: "not_configured" };
     throw e;
   }
-  const m = /^Bearer\s+(\S+)\s*$/i.exec(header ?? "");
-  const presented = m?.[1] ?? "";
+  const raw = (header ?? "").trim();
+  if (!raw) return { ok: false, status: 401, error: "Unauthorized", reason: "missing_header" };
+  const m = /^Bearer\s+(\S+)$/i.exec(raw);
+  if (!m) return { ok: false, status: 401, error: "Unauthorized", reason: "bad_scheme" };
+  const presented = m[1];
   const a = sha256(presented);
   const b = sha256(expected);
-  if (!m || !timingSafeEqual(a, b)) {
-    return { ok: false, status: 401, error: "Unauthorized" };
+  if (!timingSafeEqual(a, b)) {
+    // Lengths only (never values) so a misconfigured token can be diagnosed from logs.
+    return { ok: false, status: 401, error: "Unauthorized", reason: "mismatch", presentedLength: presented.length, expectedLength: expected.length };
   }
   // Non-reversible id for rate limiting/audit; never log the token itself.
   return { ok: true, tokenId: a.toString("hex").slice(0, 12) };

@@ -49,8 +49,20 @@ export function getCwConfig(env: Env = process.env): CwConfig {
   };
 }
 
+/**
+ * Normalise a pasted token: dashboards often pick up surrounding whitespace,
+ * quotes, or a "Bearer " prefix copied along with the value.
+ */
+export function normalizeToken(raw: string): string {
+  return raw
+    .trim()
+    .replace(/^(["'])(.*)\1$/, "$2")
+    .replace(/^Bearer\s+/i, "")
+    .trim();
+}
+
 export function getBridgeToken(env: Env = process.env): string {
-  const t = env.BRIDGE_API_TOKEN ?? "";
+  const t = normalizeToken(env.BRIDGE_API_TOKEN ?? "");
   if (t.length < 32) {
     throw new ConfigError("BRIDGE_API_TOKEN is missing or shorter than 32 characters");
   }

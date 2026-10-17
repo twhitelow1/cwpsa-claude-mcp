@@ -23,7 +23,21 @@ describe("bearer auth", () => {
     ["Bearer "],
     [`Bearer ${TOKEN} extra`],
   ])("rejects %s", (h) => {
-    expect(verifyBearer(h)).toEqual({ ok: false, status: 401, error: "Unauthorized" });
+    expect(verifyBearer(h)).toMatchObject({ ok: false, status: 401, error: "Unauthorized" });
+  });
+
+  it("tolerates whitespace, quotes or a Bearer prefix pasted into the server env value", () => {
+    for (const stored of [`${TOKEN}\n`, `  ${TOKEN} `, `"${TOKEN}"`, `Bearer ${TOKEN}`]) {
+      expect(verifyBearer(`Bearer ${TOKEN}`, { BRIDGE_API_TOKEN: stored }).ok).toBe(true);
+    }
+  });
+
+  it("reports why auth failed without exposing the token", () => {
+    expect(verifyBearer(undefined)).toMatchObject({ reason: "missing_header" });
+    expect(verifyBearer(`Token ${TOKEN}`)).toMatchObject({ reason: "bad_scheme" });
+    const r = verifyBearer("Bearer wrong-token");
+    expect(r).toMatchObject({ reason: "mismatch", presentedLength: 11, expectedLength: TOKEN.length });
+    expect(JSON.stringify(r)).not.toContain(TOKEN);
   });
 
   it("fails closed when the server token is missing or short", () => {
