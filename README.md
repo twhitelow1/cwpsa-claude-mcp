@@ -170,3 +170,7 @@ It checks that auth is enforced, runs MCP `initialize` and `tools/list`, and pri
 - The rate limit and confirm-token single-use tracking are in memory, so they apply per serverless instance. The 10-minute expiry and payload binding still hold everywhere. For a global guarantee, add Upstash/Vercel KV.
 - Time ranges are interpreted in UTC.
 - Static bearer auth only, no per-user OAuth yet.
+
+## Other apps in this repo
+
+- [`apps/io-ghl-bridge`](apps/io-ghl-bridge/README.md): two-way Inflatable Office ↔ GoHighLevel sync for a Lead Alchemist sub-account. It's a separate Next.js app and Vercel project (Root Directory `apps/io-ghl-bridge`).
