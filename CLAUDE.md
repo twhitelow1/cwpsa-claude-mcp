@@ -2,6 +2,14 @@
 
 Next.js (App Router) + TypeScript service on Vercel wrapping the ConnectWise PSA REST API as a remote MCP server (`/api/mcp`) and a read-only REST API (`/api/v1/*`). See README.md for architecture.
 
+## Product reference
+
+The proposal and quoting features are modeled on the full functionality of **Kaseya Quote Manager**. For any question about how a quoting, pricing, catalog, sales order, purchasing or PSA-sync feature should behave:
+1. Check `docs/quote-manager-rebuild.md` first.
+2. Then check the KQM help site: https://help.quotemanager.kaseya.com/
+
+`docs/kaseya-quote-manager-reference.md` says how to use the reference, which source wins when they disagree, and lists where DubLow deliberately differs. The security rules below still win over KQM behavior.
+
 ## Commands
 
 - `npm test`: vitest, all ConnectWise calls mocked (`tests/helpers.ts` → `mockCw`)

@@ -5,6 +5,8 @@ Oct 25, 2026 · Todd (DubLow Digital)
 Sections 1 to 10 are Todd's research notes and plan, kept as written. Section 11 maps the plan onto this
 repository: what the ConnectWise bridge already provides, what was added for it, and what is still open.
 
+How to use KQM as the functional reference, and where DubLow differs: [`kaseya-quote-manager-reference.md`](kaseya-quote-manager-reference.md).
+
 ## 1. Product overview
 
 Kaseya Quote Manager (KQM, formerly Datto Commerce) is a cloud quote-to-procure platform for MSPs and IT resellers: it turns supplier product feeds into a branded storefront, quotes from templates in about 30 seconds, and automates sales orders and supplier purchase orders. Notes below come from the [KQM help site](https://help.quotemanager.kaseya.com/help/Content/1-start/datto-commerce-overview.htm) (151 pages studied).

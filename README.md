@@ -7,6 +7,8 @@ A secure Next.js service on Vercel that wraps the **ConnectWise PSA (Manage) RES
 
 Owner: Todd, DubLow Digital.
 
+The quoting and proposal features are modeled on **Kaseya Quote Manager**. Its help site, https://help.quotemanager.kaseya.com/, is the functional reference. See [`docs/kaseya-quote-manager-reference.md`](docs/kaseya-quote-manager-reference.md) and the build plan in [`docs/quote-manager-rebuild.md`](docs/quote-manager-rebuild.md).
+
 ## Architecture
 
 ```
