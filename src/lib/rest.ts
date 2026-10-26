@@ -16,6 +16,7 @@ export const restRoutes: { pattern: string; tool: string; params?: string[]; sum
   { pattern: "configurations", tool: "cw_search_configurations", summary: "Search configurations" },
   { pattern: "agreements", tool: "cw_get_agreements", summary: "Agreements (by company)" },
   { pattern: "catalog", tool: "cw_search_catalog", summary: "Search procurement catalog" },
+  { pattern: "catalog/pricing", tool: "cw_price_catalog", summary: "Proposed sell prices for catalog items from margin rules" },
   { pattern: "members", tool: "cw_list_members", summary: "List members" },
   { pattern: "boards", tool: "cw_list_boards_statuses", summary: "Boards, statuses and priorities" },
 ];
