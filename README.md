@@ -7,6 +7,8 @@ A secure Next.js service on Vercel that wraps the **ConnectWise PSA (Manage) RES
 
 Owner: Todd, DubLow Digital.
 
+The quoting and proposal features are modeled on **Kaseya Quote Manager**. Its help site, https://help.quotemanager.kaseya.com/, is the functional reference. See [`docs/kaseya-quote-manager-reference.md`](docs/kaseya-quote-manager-reference.md) and the build plan in [`docs/quote-manager-rebuild.md`](docs/quote-manager-rebuild.md).
+
 ## Architecture
 
 ```
@@ -39,6 +41,7 @@ Claude / Rewst / GHL
 | `src/lib/writes.ts`, `src/lib/confirm.ts` | Two-step write flow and HMAC confirm tokens |
 | `src/lib/auth.ts`, `src/lib/guard.ts`, `src/lib/ratelimit.ts` | Bearer auth, origin allow-list, rate limit |
 | `src/lib/audit.ts` | JSON-line audit log (shows up in Vercel logs) |
+| `src/lib/pricing.ts` | Pure pricing engine: margin rules, list price guard, overrides (see `docs/quote-manager-rebuild.md`) |
 | `src/lib/distributors/` | `DistributorAdapter` interface + stubs (design only, see `docs/distributors.md`) |
 
 There's no database. The audit log goes to stdout as JSON lines, and Vercel captures it. You can add a log drain if you need retention.
@@ -47,7 +50,7 @@ There's no database. The audit log goes to stdout as JSON lines, and Vercel capt
 
 **Read tools (always on):** `cw_search_tickets`, `cw_get_ticket`, `cw_list_ticket_notes`, `cw_search_time_entries`, `cw_time_summary`,
 `cw_search_companies`, `cw_get_company`, `cw_search_contacts`, `cw_search_configurations`, `cw_get_agreements`,
-`cw_search_catalog`, `cw_list_members`, `cw_list_boards_statuses`.
+`cw_search_catalog`, `cw_price_catalog`, `cw_list_members`, `cw_list_boards_statuses`.
 
 **Write tools:** `cw_add_ticket_note`, `cw_add_time_entry`, `cw_update_ticket`, `cw_create_opportunity`, `cw_create_sales_order` and `cw_add_sales_order_line`.
 - They are only registered when `WRITES_ENABLED=true`.
@@ -70,6 +73,7 @@ All endpoints are `GET` and need `Authorization: Bearer <token>`. Query params m
 | `/api/v1/companies`, `/api/v1/companies/{id}` | cw_search_companies, cw_get_company |
 | `/api/v1/contacts`, `/api/v1/configurations`, `/api/v1/agreements` | searches |
 | `/api/v1/catalog`, `/api/v1/members`, `/api/v1/boards` | lookups |
+| `/api/v1/catalog/pricing` | cw_price_catalog (proposed sell prices from margin rules) |
 
 ```bash
 curl -H "Authorization: Bearer $BRIDGE_API_TOKEN" \

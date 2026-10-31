@@ -1,5 +1,5 @@
 import { getCompany, getAgreements, searchCompanies, searchConfigurations, searchContacts } from "./companies";
-import { searchCatalog } from "./catalog";
+import { priceCatalog, searchCatalog } from "./catalog";
 import { listBoardsStatuses, listMembers } from "./system";
 import { getTicket, listTicketNotes, searchTickets } from "./tickets";
 import { searchTimeEntries, timeSummary } from "./time";
@@ -18,6 +18,7 @@ export const readTools = [
   searchConfigurations,
   getAgreements,
   searchCatalog,
+  priceCatalog,
   listMembers,
   listBoardsStatuses,
 ] as unknown as ToolDef[];
